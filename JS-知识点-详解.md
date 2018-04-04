@@ -41,9 +41,9 @@
     > alert(typeof c);  //object
     > ```
 
-- ie下，img.src = "" , 初始加载页面的时候，会默认进入 error函数
+  ​
 
-
+  **ie下，img.src = "" , 初始加载页面的时候，会默认进入 error函数** 
 
 
 
@@ -707,30 +707,30 @@ exports.addEvent = (function(window, undefined) {
 
 > ```js
 > function tco(f) {
-> var value;
-> var active = false;
-> var accumulated = [];
+>   var value;
+>   var active = false;
+>   var accumulated = [];
 >
-> return function accumulator() {
-> accumulated.push(arguments);
-> if (!active) {
-> active = true;
-> while (accumulated.length) {
-> value = f.apply(this, accumulated.shift());
-> }
-> active = false;
-> return value;
-> }
-> };
+>   return function accumulator() {
+>     accumulated.push(arguments);
+>     if (!active) {
+>       active = true;
+>       while (accumulated.length) {
+>      	 value = f.apply(this, accumulated.shift());
+>       }
+>       active = false;
+>       return value;
+>     }
+>   };
 > }
 >
 > var sum = tco(function(x, y) {
-> if (y > 0) {
-> return sum(x + 1, y - 1)
-> }
-> else {
-> return x
-> }
+>   if (y > 0) {
+>   	return sum(x + 1, y - 1)
+>   }
+>   else {
+>     return x
+>   }
 > });
 >
 > sum(1, 100000)
@@ -785,11 +785,7 @@ CMD是懒加载，在require时才会加载依赖，
 
 ```js
 // 注意：闭包前加上分号是为了给前一个模块填坑，分号多了没问题，少了则语句可能发生变化。
-;(function (global) { 
-   function factory() {    
-     var moduleName = {};    
-     return moduleName;  
-   }
+;(function (global, factory) { 
    if (typeof module !== 'undefined' && typeof exports === 'object') {
       // 能够满足Node.js的需求    
      module.exports = factory();   
@@ -802,7 +798,10 @@ CMD是懒加载，在require时才会加载依赖，
        //我们可以将模块放在window上为了模块内部在浏览器和Node.js中都能使用全局对象，我们可以做此判断：    
      global.moduleName = factory();
    }
- })(typeof window !== 'undefined' ? window : global);
+ })(typeof window !== 'undefined' ? window : global, function() {
+   	var moduleName = {};    
+    return moduleName; 
+});
 ```
 
 **在不同环境下引入** 
@@ -902,39 +901,39 @@ document.body.appendChild(_js);
 >
 > - ## 发现了一个有趣的东西
 >
->   `setTimeout(fn, 0)`在下一轮**“事件循环”** 开始时执行
+> `setTimeout(fn, 0)`在下一轮**“事件循环”** 开始时执行
 >
->   `Promise.resolve()`在本轮**“事件循环”** 结束时执行
+> `Promise.resolve()`在本轮**“事件循环”** 结束时执行
 >
->   `console.log('one')`则是立即执行，因此**最先输出** 
+> `console.log('one')`则是立即执行，因此**最先输出** 
 >
->   ```js
->   setTimeout(function () {
->     console.log('three');
->   }, 0);
+> ```js
+> setTimeout(function () {
+> console.log('three');
+> }, 0);
 >
->   Promise.resolve().then(function () {
->     console.log('two');
->   });
+> Promise.resolve().then(function () {
+> console.log('two');
+> });
 >
->   console.log('one');
+> console.log('one');
 >
->   // one
->   // two
->   // three
->   ```
+> // one
+> // two
+> // three
+> ```
 
 ​	*Application*
 
 > ```js
 > // 图片的加载写成一个Promise，一旦加载完成，Promise的状态就发生变化
 > const preloadImage = function (path) {
->   return new Promise(function (resolve, reject) {
->     const image = new Image();
->     image.onload  = resolve;
->     image.onerror = reject;
->     image.src = path;
->   });
+> return new Promise(function (resolve, reject) {
+> const image = new Image();
+> image.onload  = resolve;
+> image.onerror = reject;
+> image.src = path;
+> });
 > };
 > ```
 >
@@ -943,36 +942,36 @@ document.body.appendChild(_js);
 ## ES6 - Generator 
  	*grammar attention*
  	> - Generator 函数是一个状态机，封装了多个内部状态
- 	>    >
- 	>    >调用 `Generator` 函数后，该函数并不执行，返回的也不是函数运行结果，而是一个指向内部状态的指针对象
- 	>    >
- 	>    >位置记忆
- 	>    >
- 	>    >执行多次
- 	>    >
- 	>    >遇到`yield`，函数暂停执行，下一次再从该位置继续向后执行
- 	>    >
- 	>    >只能用在 Generator 函数里面
- 	>    >
- 	>    >紧跟在`yield`后面的那个表达式的值，作为返回的对象的`value`属性值
- 	>    >
- 	>    >- `yield` 
- 	>    >
- 	>    >`yield`表达式本身没有返回值，或者说总是返回`undefined`
- 	>    >
- 	>    >- `next`
- 	>    >
- 	>    >`next`方法可以带一个参数，该参数就会被当作上一个`yield`表达式的返回值
- 	>    >
- 	>    >通过`next`方法的参数，就有办法在 Generator 函数开始运行之后，继续向函数体内部注入值
- 	>    >
- 	>    >- `return` 
- 	>    >
- 	>    >Generator 函数的遍历就终止
- 	>    >
- 	>    >`return`方法调用时，不提供参数，则返回值的`value`属性为`undefined`
- 	>    >
- 	>    >`return`方法会推迟到`finally`代码块执行完再执行
+ 	>    >    >
+ 	>    >    >调用 `Generator` 函数后，该函数并不执行，返回的也不是函数运行结果，而是一个指向内部状态的指针对象
+ 	>    >    >
+ 	>    >    >位置记忆
+ 	>    >    >
+ 	>    >    >执行多次
+ 	>    >    >
+ 	>    >    >遇到`yield`，函数暂停执行，下一次再从该位置继续向后执行
+ 	>    >    >
+ 	>    >    >只能用在 Generator 函数里面
+ 	>    >    >
+ 	>    >    >紧跟在`yield`后面的那个表达式的值，作为返回的对象的`value`属性值
+ 	>    >    >
+ 	>    >    >- `yield` 
+ 	>    >    >
+ 	>    >    >`yield`表达式本身没有返回值，或者说总是返回`undefined`
+ 	>    >    >
+ 	>    >    >- `next`
+ 	>    >    >
+ 	>    >    >`next`方法可以带一个参数，该参数就会被当作上一个`yield`表达式的返回值
+ 	>    >    >
+ 	>    >    >通过`next`方法的参数，就有办法在 Generator 函数开始运行之后，继续向函数体内部注入值
+ 	>    >    >
+ 	>    >    >- `return` 
+ 	>    >    >
+ 	>    >    >Generator 函数的遍历就终止
+ 	>    >    >
+ 	>    >    >`return`方法调用时，不提供参数，则返回值的`value`属性为`undefined`
+ 	>    >    >
+ 	>    >    >`return`方法会推迟到`finally`代码块执行完再执行
 
 ​	如果将 Generator 函数当作协程，完全可以将多个需要互相协作的任务写成 Generator 函数，它们之间使用`yield`表示式交换控制权
 
@@ -992,26 +991,26 @@ document.body.appendChild(_js);
 ​	Generator 函数可以进一步改善代码运行流程
 > ```js
 > function* longRunningTask(value1) {
->   try {
->   var value2 = yield step1(value1);
->   var value3 = yield step2(value2);
->   var value4 = yield step3(value3);
->   var value5 = yield step4(value4);
->   // Do something with value4
->   } catch (e) {
->   // Handle any error from step1 through step4
->   }
+> try {
+> var value2 = yield step1(value1);
+> var value3 = yield step2(value2);
+> var value4 = yield step3(value3);
+> var value5 = yield step4(value4);
+> // Do something with value4
+> } catch (e) {
+> // Handle any error from step1 through step4
+> }
 > }
 >
 > scheduler(longRunningTask(initialValue));
 >
 > function scheduler(task) {
->   var taskObj = task.next(task.value);
->   // 如果Generator函数未结束，就继续调用
->   if (!taskObj.done) {
->     task.value = taskObj.value
->     scheduler(task);
->   }
+> var taskObj = task.next(task.value);
+> // 如果Generator函数未结束，就继续调用
+> if (!taskObj.done) {
+> task.value = taskObj.value
+> scheduler(task);
+> }
 > }
 > ```
 >
@@ -1046,12 +1045,12 @@ document.body.appendChild(_js);
 > function* main() {
 >   var result = yield request("http://some.url");
 >   var resp = JSON.parse(result);
->     console.log(resp.value);
+>   console.log(resp.value);
 > }
 >
 > function request(url) {
 >   makeAjaxCall(url, function(response){
->     it.next(response);
+>   	it.next(response);
 >   });
 > }
 >
