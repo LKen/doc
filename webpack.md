@@ -50,3 +50,6 @@
   > `import css`模块，以往除了`css3`原生语法`@import`可以引入样式文件，无法通过其他方式引入`css`模块，
   >
   > 那么这插件便是是我们开发更方便，像`js`一样引入`stylesheet module`
+
+
+- `module rules`:越放在后面的就越先被执行
