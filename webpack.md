@@ -53,3 +53,23 @@
 
 
 - `module rules`:越放在后面的就越先被执行
+
+
+- 错误注意
+
+> ```js
+> // DeprecationWarning: Tapable.plugin is deprecated. Use new API on `.hooks` instead
+> // 不是错误，只是警告，一般在一些依赖更新后弃用了一些方法后，给的提示而已
+> // 在module 后面加上@next
+>
+> $ npm install extract-text-webpack-plugin@next --save-dev 
+> ```
+
+- `extract-text-webpack-plugin`
+
+  - allChunks
+
+  > 从所有额外的 chunk(additional chunk) 提取（默认情况下，它仅从初始chunk(initial chunk) 中提取）
+  >
+  > 从所有额外的 chunk(additional chunk) 提取（默认情况下，它仅从初始chunk(initial chunk) 中提取）
+  > 当使用 `CommonsChunkPlugin` 并且在公共 chunk 中有提取的 chunk（来自`ExtractTextPlugin.extract`）时，`allChunks` **必须设置为 `true
