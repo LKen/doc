@@ -69,7 +69,34 @@
 
   - allChunks
 
-  > 从所有额外的 chunk(additional chunk) 提取（默认情况下，它仅从初始chunk(initial chunk) 中提取）
-  >
-  > 从所有额外的 chunk(additional chunk) 提取（默认情况下，它仅从初始chunk(initial chunk) 中提取）
-  > 当使用 `CommonsChunkPlugin` 并且在公共 chunk 中有提取的 chunk（来自`ExtractTextPlugin.extract`）时，`allChunks` **必须设置为 `true
+  > 1. 从所有额外的 chunk(additional chunk) 提取（默认情况下，它仅从初始chunk(initial chunk) 中提取）
+  > 2. 从所有额外的 chunk(additional chunk) 提取（默认情况下，它仅从初始chunk(initial chunk) 中提取）
+  > 3. 当使用 `CommonsChunkPlugin` 并且在公共 chunk 中有提取的 chunk（来自`ExtractTextPlugin.extract`）时，`allChunks` **必须设置为 `true，必须要配合这个插件
+  > 4. 必须在webpack3.0版本下（真尼玛坑爹）
+
+- **`min-css-extract-plugin`** 
+
+  > 1. webpack 4.0下使用
+  > 2. 配置上有所更改，不再使用 style-loader
+
+## mode
+
+- production
+
+> -- **mode: "production"** 
+>
+> 1. 在这个模式下，触发`optimization.minimizer`的配置，若是不填，自动打包压缩js,却不会压缩css
+> 2. 参数为`[Array]`， 可以配置`plugin`，只在`mode == production` 下才会生效
+
+## Tree Shaking
+
+>  去除无用的css 或者 js （特别是第三方框架）
+>
+> purify-css		glob-all 		purifycss-webpack
+
+## 图片处理
+
+- `file-loader`: css引入图片
+- `url-loader`: base64转换
+- `img-loader`: sprite 雪碧图
+- `postcss-sprites`: 压缩图片
