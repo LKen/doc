@@ -638,7 +638,7 @@ exports.addEvent = (function(window, undefined) {
 >
 > `&&` 只有左边成立，得出的结果为true，才会执行右边的语句，可用来做判断
 >
-> `||` 左右边的语句都要执行
+> `||` 左右边的语句可能要执行，左边成立，右边将不执行
 >
 > ```js
 > var a=1,b=2; a > 2 && b>3; (ok)  // false
@@ -1058,5 +1058,10 @@ document.body.appendChild(_js);
 > it.next();
 > ```
 >
-> 
+
+
+
+### 在一个Object里面搜索关键字
+
+> 可以先将其转换为JSON 格式，然后正则匹配相关关键字便可
 

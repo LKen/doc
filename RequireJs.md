@@ -31,3 +31,10 @@
   - `exports`值（输出的变量名）: 表明这个模块外部调用时的名称
   - `deps` 数组 : 表明该模块的依赖性
 
+
+## 关于RequireJS，如何引入文件Template
+
+> 引入插件 `requirejs-text/text.js`
+>
+> 
+
