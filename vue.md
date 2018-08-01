@@ -153,4 +153,132 @@
 
 
 
+#### 组件基础
 
+- 当用在组件上时，`v-model` 则会这样
+
+  > 将其 `value` 特性绑定到一个名叫 `value` 的 prop 上
+  >
+  > 在其 `input` 事件被触发时，将新的值通过自定义的 `input` 事件抛出
+  >
+  > ```js
+  > Vue.component('custom-input', {
+  >   props: ['value'],
+  >   template: `
+  >     <input
+  >       v-bind:value="value"
+  >       v-on:input="$emit('input', $event.target.value)"
+  >     >
+  >   `
+  > })
+  > ```
+
+- 动态组件
+
+  - 通过 Vue 的 `<component>` 元素加一个特殊的 `is` 特性来实现
+
+    ​
+
+#### 表单输入绑定
+
+- v-model 是一个语法糖，有以下这几种用法
+
+  > 对于单选按钮，复选框及选择框的选项，`v-model` 绑定的值通常是静态字符串 (对于复选框也可以是布尔值)：
+  >
+  > ```html
+  > <!-- 当选中时，`picked` 为字符串 "a" -->
+  > <input type="radio" v-model="picked" value="a">
+  >
+  > <!-- `toggle` 为 true 或 false -->
+  > <input type="checkbox" v-model="toggle">
+  >
+  > <!-- 当选中第一个选项时，`selected` 为字符串 "abc" -->
+  > <select v-model="selected">
+  >   <option value="abc">ABC</option>
+  > </select>
+  > ```
+
+
+
+#### 异步组件获取
+
+- 使用`keep-alive`保持切换组件的状态
+
+  > ```html
+  > <!-- 失活的组件将会被缓存！-->
+  > <keep-alive>
+  >   <component v-bind:is="currentTabComponent"></component>
+  > </keep-alive>
+  > ```
+
+- 在大型应用中，我们可能需要将应用分割成小一些的代码块，并且只在需要的时候才从服务器加载一个模块。为了简化，Vue 允许你以一个工厂函数的方式定义你的组件，这个工厂函数会异步解析你的组件定义。Vue 只有在这个组件需要被渲染的时候才会触发该工厂函数，且会把结果缓存起来供未来重渲染
+
+  > ```js
+  > // 一个推荐的做法是将异步组件和 webpack 的 code-splitting 功能一起配合使用：
+  > Vue.component('async-webpack-example', function (resolve) {
+  >   // 这个特殊的 `require` 语法将会告诉 webpack
+  >   // 自动将你的构建代码切割成多个包，这些包
+  >   // 会通过 Ajax 请求加载
+  >   require(['./my-async-component'], resolve)
+  > })
+  >
+  > // 找到了，局部注册
+  > new Vue({
+  >   // ...
+  >   components: {
+  >     'my-component': () => import('./my-async-component')
+  >   }
+  > })
+  > ```
+
+#### 混入 mixins
+
+- 数据对象		数据对象在内部会进行浅合并 (一层属性深度)，在和组件的数据发生冲突时以组件数据优先
+- 钩子函数         同名钩子函数将混合为一个数组，因此`都将被调用`。另外，混入对象的钩子将在组件自身钩子**`之前`** 调用
+- 对象的选项       例如 `methods`, `components` 和 `directives`，将被混合为同一个对象。两个对象键名冲突时，`取组件对象的键值对`
+
+#### 插槽
+
+- slot  要有默认值
+
+- 父组件模板的所有东西都会在父级作用域内编译；子组件模板的所有东西都会在子级作用域内编译
+
+- 神奇的地方，比如说，有一个公用的组件，一般模样，但是不同应用的部分需要一点点的内部区别，不可能为每一个不同（特别的地方）而去创建一个新的component，这时候可以选择为`待办项<slot v-bind:todo="xxx"></slot>`定义一个不一样的 `<template>` 作为替代方案，并且可以通过 `slot-scope = yyy` 特性从子组件获取数据`yyy.todo.mm`来定制特别的 地方
+
+  > 可能比较绕
+  >
+  > ```html
+  > // template.vue
+  > <ul>
+  >   <li
+  >     v-for="todo in todos"
+  >     v-bind:key="todo.id"
+  >   >
+  >     <!-- 我们为每个 todo 准备了一个插槽，-->
+  >     <!-- 将 `todo` 对象作为一个插槽的 prop 传入。-->
+  >     <slot v-bind:todo="todo">
+  >       <!-- 回退的内容 -->
+  >       {{ todo.text }}
+  >     </slot>
+  >   </li>
+  > </ul>
+  >
+  > // main.html
+  > <todo-list v-bind:todos="todos">
+  >   <!-- 将 `slotProps` 定义为插槽作用域的名字 -->
+  >   <template slot-scope="slotProps">
+  >     <!-- 为待办项自定义一个模板，-->
+  >     <!-- 通过 `slotProps` 定制每个待办项。-->
+  >     <span v-if="slotProps.todo.isComplete">✓</span>
+  >     {{ slotProps.todo.text }}
+  >   </template>
+  > </todo-list>
+  >
+  > // 可以在支持的环境下 (单文件组件或现代浏览器)，在这些表达式中使用 ES2015 解构语法
+  > <todo-list v-bind:todos="todos">
+  >   <template slot-scope="{ todo }">
+  >     <span v-if="todo.isComplete">✓</span>
+  >     {{ todo.text }}
+  >   </template>
+  > </todo-list>
+  > ```
