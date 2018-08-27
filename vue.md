@@ -282,3 +282,42 @@
   >   </template>
   > </todo-list>
   > ```
+
+
+
+
+#### VSCode 断点调试VUE
+
+​	之前在Chrome上调试vue，发现一个麻烦的问题，就是在找文件的时候，会比较花时间，所以研究下了vscode下的vue调试模式
+
+> // 且看代码
+>
+> "version": "0.2.0",
+>
+>   "configurations": [
+>
+> ​    {
+>
+> ​      "type": "chrome",
+>
+> ​      "request": "launch",
+>
+> ​      "name": "Vue Launch",
+>
+> ​      "url": "http://localhost:9527/#/dashboard",
+>
+> ​      "webRoot": "${workspaceFolder}/src",
+>
+> ​      "sourceMaps": true,
+>
+> ​      "sourceMapPathOverrides": {
+>
+> ​        "webpack:///src/*": "${webRoot}/*"
+>
+> ​      }} ]}
+>
+> 这是vscode下的调试.json配置文件
+>
+> 有一个缺点，就是因为使用node去驱动程序运行的，所以没有检测程序启动，只能监听浏览器的的运行程序
+>
+> 就是说要按两次调试（绿色按钮），第一次会失败，第二次才成功
